@@ -1,0 +1,9 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Empleados · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Equipo</span><h1>Cuentas y roles</h1><p>Controla el acceso de administradores, cajeros y baristas.</p></div></div>
+<div class="content-grid">
+  <section class="panel panel--wide"><div class="data-table"><table><thead><tr><th>Empleado</th><th>Usuario</th><th>Rol</th><th>Estado</th></tr></thead><tbody>{% for empleado in empleados %}<tr><td><strong>{{ empleado.nombre }}</strong><small>{{ empleado.usuario.email }}</small></td><td>{{ empleado.usuario.username }}</td><td><span class="badge">{{ empleado.get_rol_display }}</span></td><td>{% if empleado.usuario.is_active %}<span class="badge badge--success">Activo</span>{% else %}<span class="badge">Inactivo</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></section>
+  <aside class="panel"><div class="panel__heading"><div><span class="eyebrow">Nueva cuenta</span><h2>Agregar empleado</h2></div></div><form method="post" class="form-stack">{% csrf_token %}<label>Nombre<input name="nombre" required></label><label>Correo<input type="email" name="email"></label><label>Usuario<input name="usuario" required></label><label>Contraseña<input type="password" name="contrasena" minlength="6" required></label><label>Rol<select name="rol"><option value="administrador">Administrador</option><option value="cajero">Cajero</option><option value="barista">Barista</option></select></label><button class="button" type="submit">Crear cuenta</button></form></aside>
+</div>
+{% endblock %}

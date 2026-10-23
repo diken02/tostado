@@ -1,0 +1,66 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Centro de administración · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Centro de administración</span><h1>Dashboard Ejecutivo</h1><p>Resumen de métricas clave.</p></div><span class="date-chip">{% now "j M Y" %}</span></div>
+<section class="metric-grid">
+  <article class="metric"><span>Ventas hoy</span><strong>${{ ventas_hoy|floatformat:2 }}</strong><small class="metric__trend">{% if diferencia_ventas >= 0 %}<b class="trend-up">↗ +{{ diferencia_ventas|floatformat:1 }}%</b>{% else %}<b class="trend-down">↘ {{ diferencia_ventas|floatformat:1 }}%</b>{% endif %} vs ayer</small></article>
+  <article class="metric"><span>Pedidos hoy</span><strong>{{ pedidos_hoy }}</strong><small>Ticket promedio: ${{ ticket_promedio|floatformat:2 }}</small></article>
+  <article class="metric"><span>Clientes</span><strong>{{ clientes_total }}</strong><small>Clientes registrados</small></article>
+  <article class="metric"><span>Alertas inventario</span><strong>{{ alertas_inventario }}</strong><small>{% if alertas_inventario %}Insumos bajo stock mínimo{% else %}Todo en stock{% endif %}</small></article>
+</section>
+<section class="dashboard-charts" aria-label="Gráficos de ventas">
+  <article class="panel chart-card">
+    <div class="panel__heading"><div><span class="eyebrow">Hoy</span><h2>Ventas por hora</h2><p>Distribución de ventas durante el día.</p></div></div>
+    {% if tiene_ventas_hoy %}
+      <div class="bar-chart" role="img" aria-label="Ventas por hora del día">
+        {% for item in ventas_por_hora %}
+          <div class="bar-chart__column">
+            <span class="bar-chart__bar" style="--bar-height: {{ item.altura }}%" title="{{ item.hora }}:00 · ${{ item.total|floatformat:2 }}"></span>
+            <small>{% if item.hora == 0 or item.hora == 6 or item.hora == 12 or item.hora == 18 %}{{ item.hora }}h{% endif %}</small>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="chart-empty">Las ventas de hoy aparecerán aquí.</div>
+    {% endif %}
+  </article>
+  <article class="panel chart-card">
+    <div class="panel__heading"><div><span class="eyebrow">Últimos 7 días</span><h2>Tendencia de ventas</h2><p>Evolución de ventas diarias.</p></div></div>
+    {% if tiene_ventas_semana %}
+      <div class="line-chart">
+        <svg class="line-chart__svg" viewBox="0 0 720 220" preserveAspectRatio="none" role="img" aria-label="Tendencia de ventas de los últimos siete días">
+          <g class="line-chart__grid"><line x1="32" y1="40" x2="688" y2="40"/><line x1="32" y1="85" x2="688" y2="85"/><line x1="32" y1="130" x2="688" y2="130"/><line x1="32" y1="180" x2="688" y2="180"/></g>
+          <polyline class="line-chart__path" points="{{ ventas_linea }}"/>
+          {% for item in ventas_por_dia %}
+            <circle class="line-chart__point" cx="{{ item.x }}" cy="{{ item.y }}" r="4"><title>{{ item.fecha|date:'j M' }} · ${{ item.total|floatformat:2 }}</title></circle>
+          {% endfor %}
+        </svg>
+        <div class="line-chart__labels">{% for item in ventas_por_dia %}<small>{{ item.fecha|date:"D" }}</small>{% endfor %}</div>
+      </div>
+    {% else %}
+      <div class="chart-empty">La tendencia aparecerá cuando se registren ventas.</div>
+    {% endif %}
+  </article>
+</section>
+<div class="content-grid">
+  <section class="panel panel--wide">
+    <div class="panel__heading"><div><span class="eyebrow">Producción</span><h2>Órdenes recientes</h2></div></div>
+    <div class="order-list">
+      {% for orden in ordenes %}
+        <article class="order-row">
+          <div><strong>Orden #{{ orden.pk }}</strong><span>{{ orden.get_tipo_display }} · {{ orden.fecha|date:"H:i" }}</span></div>
+          <div class="order-items">{% for item in orden.items.all %}<span>{{ item.cantidad }}× {{ item.producto.nombre }}</span>{% endfor %}</div>
+          <form method="post" action="{% url 'actualizar_orden' orden.pk %}">
+            {% csrf_token %}<input type="hidden" name="siguiente" value="admin">
+            <select name="estado" onchange="this.form.submit()">{% for value,label in orden.Estado.choices %}<option value="{{ value }}" {% if orden.estado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+          </form>
+        </article>
+      {% empty %}<div class="empty-state"><strong>Todo en calma</strong><p>Aún no hay órdenes registradas hoy.</p></div>{% endfor %}
+    </div>
+  </section>
+  <aside class="panel">
+    <div class="panel__heading"><div><span class="eyebrow">Stock</span><h2>Alertas</h2></div><a href="{% url 'inventario' %}">Ver todo</a></div>
+    <div class="stock-list">{% for insumo in stock_bajo %}<div><span><strong>{{ insumo.nombre }}</strong><small>Mínimo: {{ insumo.nivel_minimo }} {{ insumo.unidad }}</small></span><b>{{ insumo.cantidad }} {{ insumo.unidad }}</b></div>{% empty %}<div class="empty-state"><p>Todos los insumos están en buen nivel.</p></div>{% endfor %}</div>
+  </aside>
+</div>
+{% endblock %}

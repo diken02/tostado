@@ -1,0 +1,87 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sistema POS de Tostado Cafetería">
+  <title>{% block title %}Tostado Cafetería{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'cafeteria/app.css' %}?v=5">
+  <script src="{% static 'cafeteria/app.js' %}?v=5" defer></script>
+</head>
+<body>
+  {% if user.is_authenticated and empleado_actual %}
+    <header class="topbar">
+      <a class="brand brand--compact" href="{% url 'admin' %}">
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 3c1.1-1 0-1.8 0-2m5 2c1.1-1 0-1.8 0-2M5 8h13l-1.2 10.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 10h1a3 3 0 0 1 0 6h-2m-12 6h15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span><strong>Tostado</strong><small>{{ empleado_actual.nombre }} · {{ empleado_actual.get_rol_display }}</small></span>
+      </a>
+      <span class="mobile-page-title">
+        {% if request.resolver_match.url_name == 'pos' %}Punto de venta
+        {% elif request.resolver_match.url_name == 'mesas' %}Mesas
+        {% elif request.resolver_match.url_name == 'productos' %}Productos
+        {% elif request.resolver_match.url_name == 'inventario' %}Inventario
+        {% elif request.resolver_match.url_name == 'clientes' %}Clientes
+        {% elif request.resolver_match.url_name == 'reportes' %}Reportes
+        {% elif request.resolver_match.url_name == 'empleados' %}Cuentas
+        {% else %}Admin{% endif %}
+      </span>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="{% url 'admin' %}" {% if request.resolver_match.url_name == 'admin' %}aria-current="page"{% endif %}><span aria-hidden="true">▦</span>Admin</a>
+        {% if empleado_actual.rol == 'administrador' or empleado_actual.rol == 'cajero' %}
+          <a href="{% url 'pos' %}" {% if request.resolver_match.url_name == 'pos' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span>Punto de venta</a>
+        {% endif %}
+        <a href="{% url 'mesas' %}" {% if request.resolver_match.url_name == 'mesas' %}aria-current="page"{% endif %}><span aria-hidden="true">◉</span>Mesas</a>
+        {% if empleado_actual.rol == 'administrador' %}
+          <a href="{% url 'productos' %}" {% if request.resolver_match.url_name == 'productos' %}aria-current="page"{% endif %}><span aria-hidden="true">☕</span>Productos</a>
+          <a href="{% url 'inventario' %}" {% if request.resolver_match.url_name == 'inventario' %}aria-current="page"{% endif %}><span aria-hidden="true">▤</span>Inventario{% if alertas_stock %}<span class="badge badge--danger">{{ alertas_stock }}</span>{% endif %}</a>
+        {% endif %}
+        {% if empleado_actual.rol != 'barista' %}<a href="{% url 'clientes' %}" {% if request.resolver_match.url_name == 'clientes' %}aria-current="page"{% endif %}><span aria-hidden="true">♙</span>Clientes</a>{% endif %}
+        {% if empleado_actual.rol == 'administrador' %}
+          <a href="{% url 'reportes' %}" {% if request.resolver_match.url_name == 'reportes' %}aria-current="page"{% endif %}><span aria-hidden="true">▥</span>Reportes</a>
+          <a href="{% url 'empleados' %}" {% if request.resolver_match.url_name == 'empleados' %}aria-current="page"{% endif %}><span aria-hidden="true">♧</span>Cuentas</a>
+        {% endif %}
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button" type="submit"><span aria-hidden="true">↪</span> Salir</button></form>
+      </nav>
+      <form class="mobile-logout" method="post" action="{% url 'logout' %}" aria-label="Cerrar sesión">
+        {% csrf_token %}<button class="link-button" type="submit" aria-label="Cerrar sesión">↪</button>
+      </form>
+    </header>
+    <nav class="mobile-nav" aria-label="Navegación móvil">
+      <a href="{% url 'admin' %}" {% if request.resolver_match.url_name == 'admin' %}aria-current="page"{% endif %}><span aria-hidden="true">▦</span><small>Admin</small></a>
+      {% if empleado_actual.rol == 'administrador' or empleado_actual.rol == 'cajero' %}
+        <a href="{% url 'pos' %}" {% if request.resolver_match.url_name == 'pos' %}aria-current="page"{% endif %}><span aria-hidden="true">▣</span><small>Venta</small></a>
+      {% endif %}
+      <a href="{% url 'mesas' %}" {% if request.resolver_match.url_name == 'mesas' %}aria-current="page"{% endif %}><span aria-hidden="true">◉</span><small>Mesas</small></a>
+      {% if empleado_actual.rol != 'barista' %}
+        <a href="{% url 'clientes' %}" {% if request.resolver_match.url_name == 'clientes' %}aria-current="page"{% endif %}><span aria-hidden="true">♙</span><small>Clientes</small></a>
+      {% endif %}
+      {% if empleado_actual.rol == 'administrador' %}
+        <details class="mobile-nav-more">
+          <summary><span aria-hidden="true">•••</span><small>Más</small></summary>
+          <div class="mobile-nav-more__menu">
+            <a href="{% url 'productos' %}"><span aria-hidden="true">☕</span>Productos</a>
+            <a href="{% url 'inventario' %}"><span aria-hidden="true">▤</span>Inventario{% if alertas_stock %}<span class="badge badge--danger">{{ alertas_stock }}</span>{% endif %}</a>
+            <a href="{% url 'reportes' %}"><span aria-hidden="true">▥</span>Reportes</a>
+            <a href="{% url 'empleados' %}"><span aria-hidden="true">♧</span>Cuentas</a>
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit"><span aria-hidden="true">↪</span>Cerrar sesión</button></form>
+          </div>
+        </details>
+      {% endif %}
+    </nav>
+  {% endif %}
+
+  {% if messages %}
+    <div class="messages" role="status">
+      {% for message in messages %}<div class="message message--{{ message.tags }}">{{ message }}</div>{% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="{% block main_class %}shell{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

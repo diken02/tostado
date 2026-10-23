@@ -1,0 +1,91 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Menú · Tostado{% endblock %}
+{% block main_class %}public-menu{% endblock %}
+{% block content %}
+{% regroup productos by categoria as categorias %}
+<header class="public-header">
+  <a class="brand brand--compact" href="{% url 'login' %}">
+    <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 3c1.1-1 0-1.8 0-2m5 2c1.1-1 0-1.8 0-2M5 8h13l-1.2 10.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 10h1a3 3 0 0 1 0 6h-2m-12 6h15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span><strong>Tostado</strong><small>Haz tu pedido</small></span>
+  </a>
+  <a class="menu-back" href="{% url 'login' %}" aria-label="Volver al inicio"><span aria-hidden="true">←</span><span>Volver</span></a>
+</header>
+<nav class="menu-category-bar" aria-label="Categorías del menú">
+  {% for categoria in categorias %}
+    <button class="category-chip{% if forloop.first %} is-active{% endif %}" type="button" data-category-filter="{{ forloop.counter0 }}">
+      <span aria-hidden="true">
+        {% if categoria.grouper == 'Bebidas Calientes' %}☕
+        {% elif categoria.grouper == 'Bebidas Frías' %}🧋
+        {% elif categoria.grouper == 'Repostería' or categoria.grouper == 'Postres' %}🥐
+        {% else %}🍽️{% endif %}
+      </span>
+      {{ categoria.grouper }}
+    </button>
+  {% endfor %}
+</nav>
+<form method="post" class="order-layout menu-order-layout" id="order-form">
+  {% csrf_token %}
+  <main class="menu-products">
+    <div class="menu-heading">
+      <span class="eyebrow">Preparado al momento</span>
+      <h1>¿Qué deseas tomar?</h1>
+      <p>Elige tus favoritos y agrégalos a tu pedido.</p>
+    </div>
+    {% for categoria in categorias %}
+      <section class="menu-section{% if not forloop.first %} is-hidden{% endif %}" data-menu-category="{{ forloop.counter0 }}" aria-label="{{ categoria.grouper }}">
+        <div class="product-grid">
+          {% for producto in categoria.list %}
+            <article class="product-card">
+              <div class="product-card__visual">
+                {% if producto.imagen %}
+                  <img src="{{ producto.imagen }}" alt="" loading="lazy">
+                {% else %}
+                  <span aria-hidden="true">{{ producto.nombre|slice:":1" }}</span>
+                {% endif %}
+                {% if producto.disponible %}<span class="product-card__available">Disponible</span>{% endif %}
+              </div>
+              <div class="product-card__body">
+                <div class="product-card__description">
+                  <h2>{{ producto.nombre }}</h2>
+                  {% if producto.descripcion %}<p>{{ producto.descripcion }}</p>{% endif %}
+                </div>
+                <div class="product-card__footer">
+                  <strong>${{ producto.precio }}</strong>
+                  <div class="quantity-control" aria-label="Cantidad de {{ producto.nombre }}">
+                    <button type="button" data-quantity-step="-1" aria-label="Quitar uno de {{ producto.nombre }}">−</button>
+                    <input type="number" min="0" max="20" value="0" name="producto_{{ producto.pk }}" aria-label="Cantidad de {{ producto.nombre }}" data-order-quantity data-unit-price="{{ producto.precio }}">
+                    <button type="button" data-quantity-step="1" aria-label="Agregar uno de {{ producto.nombre }}">+</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% empty %}
+      <div class="empty-state"><strong>Aún no hay productos disponibles</strong><p>Vuelve pronto para descubrir el menú.</p></div>
+    {% endfor %}
+  </main>
+  <aside class="order-card menu-order-card" id="tu-pedido">
+    <div class="menu-order-card__heading">
+      <span class="menu-cart-icon" aria-hidden="true">▣</span>
+      <div><span class="eyebrow">Tu selección</span><h2>Tu pedido</h2></div>
+    </div>
+    <label>Tu nombre<input name="nombre_cliente" placeholder="Ej: Ana García" autocomplete="name"></label>
+    <label>Tipo de pedido<select name="tipo" data-order-type><option value="local">En el local</option><option value="llevar">Para llevar</option></select></label>
+    <label class="is-hidden" data-table-field>Mesa<select name="mesa"><option value="">Seleccionar mesa</option>{% for mesa in mesas %}<option value="{{ mesa.pk }}">Mesa {{ mesa.numero }} · {{ mesa.capacidad }} personas</option>{% endfor %}</select></label>
+    <div class="order-summary" aria-live="polite">
+      <div><span>Productos</span><strong data-order-count>0</strong></div>
+      <div class="order-summary__total"><span>Total</span><strong data-order-total>$0,00</strong></div>
+    </div>
+    <button class="button button--large" type="submit">Confirmar pedido <span aria-hidden="true">→</span></button>
+    <small>El total se confirmará al recibir tu orden.</small>
+  </aside>
+</form>
+<a class="mobile-order-button" href="#tu-pedido">
+  <span class="mobile-order-button__count" data-order-count>0</span>
+  <span class="mobile-order-button__label">Ver mi pedido</span>
+  <strong data-order-total>$0,00</strong>
+  <span aria-hidden="true">›</span>
+</a>
+{% endblock %}

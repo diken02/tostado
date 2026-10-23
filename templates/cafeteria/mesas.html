@@ -1,0 +1,16 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Mesas · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Salón</span><h1>Gestión de mesas</h1><p>Control visual de ocupación y capacidad.</p></div></div>
+<section class="table-map">
+{% for mesa in mesas %}
+  <article class="table-card table-card--{{ mesa.estado }}">
+    <span class="table-card__number">{{ mesa.numero }}</span><div><strong>Mesa {{ mesa.numero }}</strong><small>{{ mesa.capacidad }} personas · {{ mesa.get_estado_display }}</small></div>
+    <form method="post">{% csrf_token %}<input type="hidden" name="mesa_id" value="{{ mesa.pk }}"><select name="estado" onchange="this.form.submit()">{% for value,label in mesa.Estado.choices %}<option value="{{ value }}" {% if mesa.estado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></form>
+  </article>
+{% endfor %}
+</section>
+<section class="panel spaced"><div class="panel__heading"><div><span class="eyebrow">Servicio</span><h2>Órdenes activas</h2></div></div>
+{% for orden in ordenes %}<div class="order-row"><div><strong>Orden #{{ orden.pk }}</strong><span>{% if orden.mesa %}Mesa {{ orden.mesa.numero }}{% else %}{{ orden.get_tipo_display }}{% endif %}</span></div><b class="status">{{ orden.get_estado_display }}</b><form method="post" action="{% url 'actualizar_orden' orden.pk %}">{% csrf_token %}<input type="hidden" name="siguiente" value="mesas"><select name="estado" onchange="this.form.submit()">{% for value,label in orden.Estado.choices %}<option value="{{ value }}" {% if orden.estado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></form></div>{% empty %}<div class="empty-state"><p>No hay órdenes activas.</p></div>{% endfor %}
+</section>
+{% endblock %}

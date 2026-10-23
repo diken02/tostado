@@ -1,0 +1,9 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Inventario · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Operación</span><h1>Inventario</h1><p>Existencias y reposición de insumos.</p></div></div>
+<div class="content-grid">
+  <section class="panel panel--wide"><div class="data-table"><table><thead><tr><th>Insumo</th><th>Disponible</th><th>Mínimo</th><th>Costo</th><th>Estado</th></tr></thead><tbody>{% for insumo in insumos %}<tr><td><strong>{{ insumo.nombre }}</strong></td><td>{{ insumo.cantidad }} {{ insumo.unidad }}</td><td>{{ insumo.nivel_minimo }} {{ insumo.unidad }}</td><td>${{ insumo.costo }}</td><td>{% if insumo.bajo_stock %}<span class="badge badge--danger">Stock bajo</span>{% else %}<span class="badge badge--success">Correcto</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></section>
+  <aside class="panel"><div class="panel__heading"><div><span class="eyebrow">Entrada</span><h2>Registrar compra</h2></div></div><form method="post" class="form-stack">{% csrf_token %}<label>Insumo<select name="insumo" required>{% for insumo in insumos %}<option value="{{ insumo.pk }}">{{ insumo.nombre }}</option>{% endfor %}</select></label><label>Proveedor<select name="proveedor" required>{% for proveedor in proveedores %}<option value="{{ proveedor.pk }}">{{ proveedor.nombre }}</option>{% endfor %}</select></label><label>Cantidad<input type="number" name="cantidad" min="0.001" step="0.001" required></label><label>Costo unitario<input type="number" name="costo_unitario" min="0.0001" step="0.0001" required></label><button class="button" type="submit">Registrar entrada</button></form></aside>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Bienvenido · Tostado{% endblock %}
+{% block main_class %}login-page{% endblock %}
+{% block content %}
+<div class="login-decoration" aria-hidden="true"><span></span><span></span><span></span></div>
+<section class="login-card" aria-labelledby="login-title">
+  <div class="login-brand-mark" aria-hidden="true">
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M22 12c3-3 0-6 0-8m10 8c3-3 0-6 0-8m10 8c3-3 0-6 0-8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M14 18h36l-4 31a7 7 0 0 1-7 6H25a7 7 0 0 1-7-6l-4-31Z" fill="currentColor"/>
+      <path d="M50 25h3a9 9 0 0 1 0 18h-5" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M21 23h22" stroke="#b45309" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+      <ellipse cx="32" cy="59" rx="19" ry="3" fill="currentColor" opacity=".38"/>
+    </svg>
+  </div>
+  <h1 id="login-title">Tostado</h1>
+  <p class="login-brand-subtitle">Cafetería</p>
+  <p class="login-prompt">¿Qué deseas tomar?</p>
+  <a class="button button--large login-order-button" href="{% url 'menu' %}"><span aria-hidden="true">▣</span>Ver menú y ordenar</a>
+  <p class="login-hint">Explora nuestro menú y realiza tu pedido</p>
+  <div class="login-divider"><span>o</span></div>
+  <details class="staff-access">
+    <summary><span aria-hidden="true">♙</span> Acceso del personal <span class="staff-access__chevron" aria-hidden="true">⌄</span></summary>
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+      <label>Usuario<input name="usuario" autocomplete="username" placeholder="Usuario" required></label>
+      <label>Contraseña<input type="password" name="contrasena" autocomplete="current-password" placeholder="Contraseña" required></label>
+      <button class="button" type="submit">Ingresar al sistema</button>
+    </form>
+    <p class="help">Demo: admin / admin123</p>
+  </details>
+</section>
+<footer class="login-footer">© 2026 Tostado Cafetería · Todos los derechos reservados</footer>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Punto de venta · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Caja</span><h1>Punto de venta</h1><p>Crea una orden y actualiza el inventario automáticamente.</p></div></div>
+<form method="post" class="pos-layout">{% csrf_token %}
+  <section>
+    {% regroup productos by categoria as categorias %}
+    {% for categoria in categorias %}
+      <div class="section-heading"><h2>{{ categoria.grouper }}</h2></div>
+      <div class="pos-products">{% for producto in categoria.list %}<label class="pos-product"><span><strong>{{ producto.nombre }}</strong><small>{{ producto.descripcion }}</small></span><b>${{ producto.precio }}</b><input type="number" name="producto_{{ producto.pk }}" min="0" max="99" value="0"></label>{% endfor %}</div>
+    {% endfor %}
+  </section>
+  <aside class="order-card">
+    <span class="eyebrow">Nueva venta</span><h2>Configurar orden</h2>
+    <label>Modalidad<select name="tipo"><option value="llevar">Para llevar</option><option value="local">En el local</option><option value="delivery">Delivery</option></select></label>
+    <label>Mesa<select name="mesa"><option value="">Sin mesa</option>{% for mesa in mesas %}<option value="{{ mesa.pk }}">Mesa {{ mesa.numero }}</option>{% endfor %}</select></label>
+    <label>Cliente<select name="cliente"><option value="">Venta general</option>{% for cliente in clientes %}<option value="{{ cliente.pk }}">{{ cliente.nombre }} · {{ cliente.puntos }} pts</option>{% endfor %}</select></label>
+    <button class="button button--large" type="submit">Crear orden</button>
+  </aside>
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "cafeteria/base.html" %}
+{% block title %}Clientes · Tostado{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Comunidad</span><h1>Clientes</h1><p>Programa de fidelización y relación con clientes.</p></div></div>
+<div class="content-grid">
+  <section class="panel panel--wide"><div class="data-table"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Puntos</th><th>Compras</th><th>Última visita</th></tr></thead><tbody>{% for cliente in clientes %}<tr><td><strong>{{ cliente.nombre }}</strong></td><td>{{ cliente.telefono }}<small>{{ cliente.email }}</small></td><td><span class="points">{{ cliente.puntos }} pts</span></td><td>${{ cliente.total_compras }}</td><td>{{ cliente.ultima_visita|date:"j M Y"|default:"Sin visitas" }}</td></tr>{% endfor %}</tbody></table></div></section>
+  <aside class="panel"><div class="panel__heading"><div><span class="eyebrow">CRM</span><h2>Nuevo cliente</h2></div></div><form method="post" class="form-stack">{% csrf_token %}<label>Nombre<input name="nombre" required></label><label>Teléfono<input name="telefono"></label><label>Correo<input type="email" name="email"></label><button class="button" type="submit">Agregar cliente</button></form></aside>
+</div>
+{% endblock %}
