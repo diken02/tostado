@@ -65,12 +65,9 @@ para pruebas, no para recibir pedidos reales.
    gratuita vence a los 30 días y, si no se actualiza durante el período de
    gracia posterior, se elimina junto con sus datos. Usa esta configuración
    solo para pruebas y no guardes pedidos reales.
-3. Cuando el despliegue esté listo, abre la Shell del servicio y carga los datos
-   de catálogo una sola vez, antes de recibir pedidos:
-
-   ```bash
-   python manage.py cargar_demo --solo-catalogo
-   ```
+3. En cada despliegue, el catálogo de ejemplo se carga únicamente si la base
+   todavía no contiene productos. No se crean usuarios demo ni se modifican
+   catálogos ya existentes.
 4. En la misma Shell, crea la cuenta del administrador. La contraseña se solicita
    de forma oculta y debe tener al menos 14 caracteres:
 
@@ -80,10 +77,9 @@ para pruebas, no para recibir pedidos reales.
 
 5. Usa la URL HTTPS de Render para probar el menú `/menu/` y el panel.
 
-`cargar_demo --solo-catalogo` no crea cuentas demo; no lo repitas después de
-comenzar a vender porque inicializa las cantidades de inventario de ejemplo.
-Nunca subas `.env` ni contraseñas a GitHub. Antes de usar el sistema con pedidos
-reales, migra a planes de pago con almacenamiento adecuado y respaldos.
+El catálogo automático no crea cuentas demo. Nunca subas `.env` ni contraseñas
+a GitHub. Antes de usar el sistema con pedidos reales, migra a planes de pago
+con almacenamiento adecuado y respaldos.
 
 Para detener la aplicación, vuelve a la ventana de la terminal y presiona `Ctrl+C`.
 

@@ -116,16 +116,9 @@ de Render para pruebas.
    gratuita vence a los 30 días y, si no se actualiza durante el período de
    gracia posterior, se elimina junto con sus datos. No uses este despliegue para
    recibir pedidos reales ni guardar datos importantes.
-3. Cuando el despliegue termine, abre **Shell** en el servicio y, en una base
-   nueva, carga el catálogo de ejemplo una sola vez:
-
-   ```bash
-   python manage.py cargar_demo --solo-catalogo
-   ```
-
-   Este comando no crea los usuarios demo con contraseñas públicas. Ejecútalo
-   únicamente antes de registrar ventas, ya que reinicializa los insumos del
-   catálogo.
+3. Durante cada despliegue, el proceso carga el catálogo de ejemplo únicamente
+   si la base todavía no contiene productos. No crea usuarios demo ni modifica
+   un catálogo existente.
 4. Crea la cuenta administrativa. Render solicitará la contraseña sin mostrarla:
 
    ```bash

@@ -30,13 +30,24 @@ class Command(BaseCommand):
             action="store_true",
             help="Carga productos, inventario y mesas sin crear usuarios demo.",
         )
+        parser.add_argument(
+            "--si-vacio",
+            action="store_true",
+            help="Carga el catálogo solo si todavía no existen productos.",
+        )
 
     def handle(self, *args, **options):
         solo_catalogo = options["solo_catalogo"]
+        si_vacio = options["si_vacio"]
+        if si_vacio and not solo_catalogo:
+            raise CommandError("--si-vacio requiere --solo-catalogo.")
         if not settings.DEBUG and not solo_catalogo:
             raise CommandError(
                 "En producción usa --solo-catalogo para no crear cuentas demo inseguras."
             )
+        if si_vacio and Producto.objects.exists():
+            self.stdout.write("El catálogo ya contiene productos; no se realizaron cambios.")
+            return
 
         if not solo_catalogo:
             empleados = [

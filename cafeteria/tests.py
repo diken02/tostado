@@ -204,6 +204,35 @@ class CatalogoDemoTests(TestCase):
         self.assertEqual(Producto.objects.count(), 10)
         self.assertEqual(Mesa.objects.count(), 8)
 
+    @override_settings(DEBUG=False)
+    def test_catalogo_se_carga_solo_si_no_hay_productos_y_no_se_reinicia(self):
+        call_command(
+            "cargar_demo",
+            solo_catalogo=True,
+            si_vacio=True,
+            stdout=StringIO(),
+        )
+        self.assertEqual(Producto.objects.count(), 10)
+        self.assertEqual(Mesa.objects.count(), 8)
+        self.assertFalse(User.objects.exists())
+
+        insumo = Insumo.objects.get(nombre="Café en Grano")
+        insumo.cantidad = Decimal("42")
+        insumo.save(update_fields=["cantidad"])
+        call_command(
+            "cargar_demo",
+            solo_catalogo=True,
+            si_vacio=True,
+            stdout=StringIO(),
+        )
+
+        self.assertEqual(Producto.objects.count(), 10)
+        self.assertEqual(insumo.__class__.objects.get(pk=insumo.pk).cantidad, Decimal("42"))
+
+    def test_si_vacio_requiere_solo_catalogo(self):
+        with self.assertRaisesRegex(CommandError, "--si-vacio requiere --solo-catalogo"):
+            call_command("cargar_demo", si_vacio=True, stdout=StringIO())
+
 
 class CrearAdministradorTests(TestCase):
     @patch(
