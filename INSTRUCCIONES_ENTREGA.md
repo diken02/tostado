@@ -53,40 +53,24 @@ credenciales MySQL correctas localmente en `.env`; nunca las compartas por chat.
 ## Publicar en Internet con Render
 
 El proyecto incluye `render.yaml` para desplegar Django con HTTPS, archivos
-estáticos y PostgreSQL persistente. Para publicar:
+estáticos y PostgreSQL. La configuración actual usa planes gratuitos de Render
+para pruebas, no para recibir pedidos reales.
 
-1. Instala Git for Windows desde <https://git-scm.com/download/win> y crea en
-   GitHub un repositorio **privado y vacío** llamado `tostado-cafeteria` (sin
-   README, licencia ni `.gitignore`). Esta carpeta aún no está conectada a Git.
-   Abre PowerShell en la carpeta del proyecto y ejecuta:
-
-   ```powershell
-   git init -b main
-   git add .
-   git status --short
-   ```
-
-   Comprueba que no aparezcan `.env`, `db.sqlite3` ni `staticfiles`. Después crea
-   el commit y súbelo, cambiando `TU_USUARIO` por tu usuario de GitHub:
-
-   ```powershell
-   git commit -m "Prepare Tostado for Render" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-   git remote add origin https://github.com/TU_USUARIO/tostado-cafeteria.git
-   git push -u origin main
-   ```
-
-   GitHub abrirá su proceso de autenticación. No compartas tokens ni contraseñas.
-2. En Render crea un **Blueprint**, conecta el repositorio y revisa el costo
-   mensual que Render presenta antes de confirmar. Esta configuración usa planes
-   de pago para la aplicación y la base de datos; no la apliques si no aceptas
-   esos cargos.
+1. El código está publicado en [diken02/tostado](https://github.com/diken02/tostado),
+   rama `main`. En Render inicia un **Blueprint** y conecta ese repositorio:
+   Render detectará `render.yaml`.
+2. Revisa los planes que aparecen antes de confirmar. Los planes gratuitos
+   pueden dormir la web tras 15 minutos sin tráfico y tardar cerca de un minuto
+   en volver; el sistema de archivos de la web es temporal. La base PostgreSQL
+   gratuita vence a los 30 días y, si no se actualiza durante el período de
+   gracia posterior, se elimina junto con sus datos. Usa esta configuración
+   solo para pruebas y no guardes pedidos reales.
 3. Cuando el despliegue esté listo, abre la Shell del servicio y carga los datos
    de catálogo una sola vez, antes de recibir pedidos:
 
    ```bash
    python manage.py cargar_demo --solo-catalogo
    ```
-
 4. En la misma Shell, crea la cuenta del administrador. La contraseña se solicita
    de forma oculta y debe tener al menos 14 caracteres:
 
@@ -94,14 +78,12 @@ estáticos y PostgreSQL persistente. Para publicar:
    python manage.py crear_administrador --username cafeadmin --nombre "Nombre del administrador" --email admin@tudominio.com
    ```
 
-5. Usa la URL HTTPS de Render. Los clientes pueden abrir `/menu/` y los pedidos
-   aparecerán en el panel del mismo servidor.
+5. Usa la URL HTTPS de Render para probar el menú `/menu/` y el panel.
 
 `cargar_demo --solo-catalogo` no crea cuentas demo; no lo repitas después de
 comenzar a vender porque inicializa las cantidades de inventario de ejemplo.
-Nunca subas `.env` ni contraseñas a GitHub. Los planes gratuitos de Render no son
-adecuados para producción: el servidor se duerme y la base gratuita expira a los
-30 días, tras lo cual los datos se eliminan después del período de gracia.
+Nunca subas `.env` ni contraseñas a GitHub. Antes de usar el sistema con pedidos
+reales, migra a planes de pago con almacenamiento adecuado y respaldos.
 
 Para detener la aplicación, vuelve a la ventana de la terminal y presiona `Ctrl+C`.
 

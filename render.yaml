@@ -2,14 +2,14 @@ databases:
   - name: tostado-postgres
     databaseName: tostado_cafeteria
     user: tostado
-    plan: basic-1gb
+    plan: free
     region: ohio
 
 services:
   - type: web
     name: tostado-cafeteria
     runtime: python
-    plan: starter
+    plan: free
     region: ohio
     buildCommand: bash build.sh
     startCommand: gunicorn tostado.wsgi:application --bind 0.0.0.0:$PORT

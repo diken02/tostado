@@ -103,39 +103,19 @@ la transición, pero Django es independiente y se inicia únicamente con Python.
 ## Publicar en Internet con Render
 
 El archivo `render.yaml` configura una aplicación Django servida con HTTPS,
-archivos estáticos gestionados por WhiteNoise y una base PostgreSQL persistente.
-La configuración conserva MySQL para el desarrollo local.
+archivos estáticos gestionados por WhiteNoise y una base PostgreSQL. La
+configuración conserva MySQL para el desarrollo local y usa los planes gratuitos
+de Render para pruebas.
 
-1. Sube el proyecto a un repositorio GitHub privado o público. Esta carpeta local
-   todavía no está conectada a un repositorio Git. Para crearla desde Windows:
-
-   - Instala Git for Windows desde <https://git-scm.com/download/win>.
-   - En GitHub crea un repositorio **privado** vacío llamado
-     `tostado-cafeteria`. No agregues README, licencia ni `.gitignore`.
-   - Abre PowerShell en la carpeta del proyecto y ejecuta:
-
-     ```powershell
-     git init -b main
-     git add .
-     git status --short
-     ```
-
-     Verifica que la lista no incluya `.env`, `db.sqlite3` ni `staticfiles`.
-     `.gitignore` los excluye automáticamente.
-   - Si la lista es correcta, crea el commit y publica la rama:
-
-     ```powershell
-     git commit -m "Prepare Tostado for Render" -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
-     git remote add origin https://github.com/TU_USUARIO/tostado-cafeteria.git
-     git push -u origin main
-     ```
-
-     Sustituye `TU_USUARIO` por tu nombre de usuario de GitHub. GitHub abrirá
-     su proceso de autenticación; no pegues tokens ni contraseñas en el chat.
-2. Inicia sesión en Render, crea un **Blueprint** y conecta ese repositorio.
-   Revisa el precio que muestra Render antes de aplicar la configuración.
-   El Blueprint utiliza planes de pago para la aplicación y PostgreSQL; no
-   actives el despliegue hasta aceptar el costo recurrente.
+1. El código se publica en el repositorio [diken02/tostado](https://github.com/diken02/tostado),
+   rama `main`. Render puede conectarse como Blueprint al repositorio público.
+2. En Render crea o sincroniza el **Blueprint**. El archivo configura planes
+   gratuitos para la aplicación y PostgreSQL, adecuados solo para continuar con
+   pruebas. La web puede dormirse tras 15 minutos sin tráfico y tardar cerca de
+   un minuto en volver; su sistema de archivos es temporal. La base PostgreSQL
+   gratuita vence a los 30 días y, si no se actualiza durante el período de
+   gracia posterior, se elimina junto con sus datos. No uses este despliegue para
+   recibir pedidos reales ni guardar datos importantes.
 3. Cuando el despliegue termine, abre **Shell** en el servicio y, en una base
    nueva, carga el catálogo de ejemplo una sola vez:
 
