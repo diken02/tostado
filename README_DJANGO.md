@@ -100,6 +100,14 @@ desde la consola o crea un superusuario con `python manage.py createsuperuser`.
 La implementación React/Vite original permanece en `src/` como referencia durante
 la transición, pero Django es independiente y se inicia únicamente con Python.
 
+## Módulo Java JDBC
+
+El proyecto incluye `jdbc/`, un módulo Java 17 independiente para administrar el
+catálogo mediante JDBC contra la misma base MySQL y la tabla `cafeteria_producto`
+creada por las migraciones de Django. Consulta [`jdbc/README.md`](jdbc/README.md)
+para requisitos, configuración y comandos de compilación y ejecución. El módulo
+no reemplaza ni modifica la aplicación web.
+
 ## Publicar en Internet con Render
 
 El archivo `render.yaml` configura una aplicación Django servida con HTTPS,
