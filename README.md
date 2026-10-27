@@ -1,146 +1,83 @@
-# Tostado Cafetería
+# ☕ Tostado Cafetería
 
-Sistema web para administrar las operaciones de una cafetería: ventas en mostrador, mesas, menú para clientes, productos, inventario, compras, clientes, empleados y reportes.
+Sistema web integral para administrar las operaciones de una cafetería desde una sola aplicación.
 
-El proyecto está diseñado para probar el funcionamiento completo de una cafetería desde una computadora local o para usarlo como base educativa y de desarrollo. Permite al personal iniciar sesión según su rol y automatiza parte del control operativo mediante recetas, existencias, puntos de fidelización y estados de las órdenes.
+Permite gestionar ventas, pedidos, mesas, productos, inventario, clientes, empleados, proveedores y reportes. Incluye un menú público para clientes y accesos separados para administrador, cajero y barista.
 
-**Repositorio:** <https://github.com/diken02/tostado>
+## ✨ Funcionalidades
 
-## Para qué sirve
+- Punto de venta (POS) y registro de pagos.
+- Menú público de autoservicio para clientes.
+- Gestión de mesas, órdenes y estados de preparación.
+- Productos, categorías, precios y disponibilidad.
+- Inventario, insumos, compras y proveedores.
+- Clientes, pedidos y puntos de fidelización.
+- Reportes de ventas y productos más vendidos.
+- Roles y permisos para administrador, cajero y barista.
+- Administración técnica de Django.
 
-- Recibir pedidos desde un menú público de autoservicio.
-- Registrar ventas y pagos en un punto de venta (POS).
-- Enviar pedidos a preparación y actualizar su estado.
-- Administrar mesas, productos, precios y disponibilidad.
-- Controlar insumos, niveles mínimos, compras y proveedores.
-- Registrar clientes y acumular puntos de compra.
-- Generar reportes y consultar los productos más vendidos.
-- Separar las funciones de administrador, cajero y barista.
+## 🛠 Tecnologías
 
-## Funcionalidades
+- **Backend:** Python 3.10+ y Django 5
+- **Base de datos local:** SQLite
+- **Base de datos alternativa:** MySQL o MariaDB
+- **Frontend:** HTML, CSS y JavaScript
+- **Desarrollo adicional:** React/Vite, Java 17 y JDBC
 
-- **Centro de administración:** resumen diario, producción y alertas de inventario.
-- **POS:** registro de ventas con descuento automático según las recetas de productos.
-- **Mesas y órdenes:** gestión de mesas, pedidos y cambios de estado.
-- **Catálogo:** administración de productos, categorías, precios y disponibilidad.
-- **Inventario:** control de existencias, movimientos y compras a proveedores.
-- **Clientes:** datos, pedidos y puntos de fidelización.
-- **Reportes:** ventas, productos más vendidos y actividad del negocio.
-- **Empleados:** autenticación, roles y permisos por área.
-- **Menú público:** autoservicio para clientes en `/menu/`.
-- **Módulo JDBC:** utilidad Java independiente para consultar el catálogo MySQL.
+## 🚀 Inicio rápido
 
-## Tecnologías
+### Requisitos mínimos
 
-- Python 3.10+
-- Django 5.2
-- MySQL/MariaDB para desarrollo local
-- PostgreSQL compatible con despliegues en Render
-- HTML, CSS y JavaScript en plantillas del servidor
-- React/Vite como referencia del prototipo original en `src/`
-- Java 17 + JDBC en `jdbc/`
+Solo necesitas Python 3.10 o una versión posterior. No debes instalar MySQL para la primera ejecución porque el proyecto usa SQLite automáticamente.
 
-## Requisitos previos
-
-- Git, si vas a descargar el proyecto desde GitHub.
-- Python 3.10 o una versión posterior.
-- MySQL 8 o MariaDB 10.6 o posterior, instalado e iniciado.
-- En Windows, debes permitir al instalador de Python agregarlo al `PATH`.
-- Conexión a Internet durante la primera instalación para descargar las dependencias.
-
-Comprueba las herramientas principales:
-
-```bash
-git --version
-python --version
-```
-
-## Descargar y ejecutar el proyecto
-
-### Windows: instalación recomendada
-
-Abre una terminal (PowerShell, CMD o Terminal de Git) y ejecuta:
-
-```bash
-git clone https://github.com/diken02/tostado.git
-cd tostado
-copy .env.example .env
-```
-
-Edita `.env` y escribe las credenciales de tu servidor MySQL. Después inicia MySQL y ejecuta:
-
-```bat
-iniciar_windows.bat
-```
-
-El lanzador crea automáticamente `.venv`, instala las dependencias, prepara la base de datos, aplica las migraciones, carga los datos de demostración y abre la aplicación.
-
-### macOS/Linux
-
-```bash
-git clone https://github.com/diken02/tostado.git
-cd tostado
-cp .env.example .env
-sh iniciar_linux_mac.sh
-```
-
-El lanzador automático requiere que MySQL esté iniciado y que `.env` contenga credenciales válidas.
-
-### Direcciones de acceso
-
-Abre:
-
-- Aplicación y login: <http://127.0.0.1:8000/>
-- Menú público: <http://127.0.0.1:8000/menu/>
-- Administración técnica de Django: <http://127.0.0.1:8000/django-admin/>
-
-Para detener el servidor, vuelve a la terminal y presiona `Ctrl+C`.
-
-## Inicio manual
-
-```bash
-python -m venv .venv
-```
+En Windows, marca **Add Python to PATH** durante la instalación de Python.
 
 ### Windows
 
-```bat
-.venv\Scripts\activate
-python -m pip install -r requirements-local.txt
-python crear_base_mysql.py
-python manage.py migrate
-python manage.py cargar_demo
-python manage.py runserver
-```
+1. Descarga el proyecto como ZIP desde GitHub o clona el repositorio:
 
-### macOS/Linux
+   ```bash
+   git clone https://github.com/diken02/tostado.git
+   cd tostado
+   ```
+
+2. Haz doble clic en `iniciar_windows.bat`.
+
+Al iniciarse por primera vez, el archivo automático:
+
+- Crea el entorno virtual aislado `.venv`.
+- Instala las dependencias dentro de ese entorno.
+- Prepara la base SQLite `db.sqlite3`.
+- Ejecuta las migraciones y crea las tablas.
+- Carga los usuarios, productos y datos de demostración.
+- Inicia Django en el puerto `8000`.
+- Abre automáticamente el navegador.
+
+### Linux o macOS
 
 ```bash
-source .venv/bin/activate
-python -m pip install -r requirements-local.txt
-python crear_base_mysql.py
-python manage.py migrate
-python manage.py cargar_demo
-python manage.py runserver
+git clone https://github.com/diken02/tostado.git
+cd tostado
+sh iniciar_linux_mac.sh
 ```
 
-## Configuración MySQL
+El iniciador conserva los mismos datos entre ejecuciones; no elimina pedidos ni cambios registrados.
 
-Ejemplo mínimo para `.env`:
+## 🌐 Direcciones locales
 
-```dotenv
-MYSQL_HOST=127.0.0.1
-MYSQL_PORT=3306
-MYSQL_DATABASE=tostado_cafeteria
-MYSQL_USER=root
-MYSQL_PASSWORD=tu_contrasena
-```
+Con el servidor iniciado, abre:
 
-El usuario configurado debe tener permiso para crear la base indicada en `MYSQL_DATABASE`. No subas `.env` ni credenciales al repositorio.
+| Sección | Dirección |
+| --- | --- |
+| Inicio de sesión | <http://127.0.0.1:8000/> |
+| Menú público | <http://127.0.0.1:8000/menu/> |
+| Administración Django | <http://127.0.0.1:8000/django-admin/> |
 
-## Usuarios de demostración
+Para detener el servidor, vuelve a la ventana de la terminal y presiona `Ctrl+C`.
 
-Estas cuentas están pensadas únicamente para pruebas locales:
+## 👤 Usuarios de demostración
+
+> Los datos de demostración están destinados únicamente a pruebas locales.
 
 | Rol | Usuario | Contraseña |
 | --- | --- | --- |
@@ -148,78 +85,72 @@ Estas cuentas están pensadas únicamente para pruebas locales:
 | Cajero | `juan` | `juan123` |
 | Barista | `laura` | `laura123` |
 
-En un entorno real debes crear cuentas propias con `python manage.py crear_administrador` o el administrador de Django y eliminar las credenciales de demostración.
+## 🗄 Base de datos
 
-## Estructura principal
+La instalación predeterminada utiliza SQLite en `db.sqlite3`. No necesitas crear manualmente la base de datos ni ejecutar scripts de instalación para comenzar.
 
-```text
-cafeteria/       Modelos, vistas, servicios, URLs y migraciones de Django
-src/             Prototipo original React/Vite
-templates/       Plantillas HTML servidas por Django
-static/          CSS y JavaScript de la aplicación Django
-tostado/         Configuración global del proyecto
-jdbc/            Módulo independiente Java/JDBC
-manage.py        Punto de entrada de administración de Django
-render.yaml      Configuración del despliegue en Render
+Para cambiar a MySQL, crea o modifica `.env` con:
+
+```dotenv
+DATABASE_ENGINE=mysql
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_DATABASE=tostado_cafeteria
+MYSQL_USER=root
+MYSQL_PASSWORD=tu_contrasena
 ```
 
-## Despliegue con Render
+El usuario de MySQL debe tener permiso para crear bases y tablas. Nunca publiques el archivo `.env` ni sus credenciales.
 
-El archivo `render.yaml` configura:
+## 🔧 Comandos manuales
 
-- Servicio web Django con Gunicorn y WhiteNoise.
-- Base PostgreSQL gratuita.
-- Configuración HTTPS y variables de entorno para producción.
-
-Desde la página de Render, crea un **Blueprint**, selecciona este repositorio y despliega la rama `main`.
+Los iniciadores automatizan estos pasos, pero también puedes ejecutarlos manualmente:
 
 ```bash
-python manage.py crear_administrador --username cafeadmin --nombre "Nombre del administrador" --email admin@tudominio.com
+python -m venv .venv
 ```
 
-La configuración gratuita de Render es adecuada solo para pruebas. Puede dormir el servicio, tardar al reactivarse y usar almacenamiento o bases de datos temporales según el plan. Para pedidos reales utiliza planes de pago, respaldos y almacenamiento persistente.
+En Windows activa el entorno con:
 
-No ejecutes el cargador demo completo en producción: puede crear usuarios con contraseñas conocidas.
+```bat
+.venv\Scripts\activate
+```
 
-## Empaquetado para entrega
-
-Para generar un ZIP limpio:
+En Linux o macOS:
 
 ```bash
-python descargar_proyecto.py
+source .venv/bin/activate
 ```
 
-El archivo se crea en `entregables/Tostado_Cafeteria_Django.zip`. Consulta [INSTRUCCIONES_ENTREGA.md](INSTRUCCIONES_ENTREGA.md) para más detalles.
+Después instala, prepara y ejecuta el proyecto:
 
-## Documentación adicional
+```bash
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py cargar_demo
+python manage.py runserver
+```
 
-- [Guía Django y despliegue](README_DJANGO.md)
+## ❓ Solución de problemas
+
+| Problema | Solución |
+| --- | --- |
+| Python no se reconoce | Reinstala Python activando **Add Python to PATH**, o prueba `py -3` en Windows. |
+| El puerto `8000` está ocupado | Ejecuta `python manage.py runserver 127.0.0.1:8001`. |
+| Falta una dependencia | Ejecuta `python -m pip install -r requirements.txt`. |
+| Error de acceso con MySQL | Revisa las credenciales de `.env` y confirma que MySQL esté iniciado. |
+| Se desea eliminar la demostración | Ejecuta nuevamente las migraciones o elimina `db.sqlite3` y vuelve a iniciar el proyecto para crear una base limpia. |
+
+## 🔒 Seguridad
+
+- No publiques `.env`, contraseñas, tokens ni claves secretas.
+- Cambia o elimina las cuentas demo antes de cualquier uso real.
+- Usa el servidor Django integrado solo para desarrollo o una red local de confianza.
+- Antes de publicar el proyecto, configura una clave secreta propia, dominio permitido y HTTPS.
+
+## 📚 Documentación adicional
+
+- [Guía técnica de Django](README_DJANGO.md)
+- [Guía de despliegue con Render](render.yaml)
 - [Instrucciones de entrega](INSTRUCCIONES_ENTREGA.md)
 - [Módulo Java/JDBC](jdbc/README.md)
-
-## Comprobación de la instalación
-
-Con el entorno virtual activado, puedes validar Django y ejecutar las pruebas del proyecto:
-
-```bash
-python manage.py check
-python manage.py test
-```
-
-Si el servidor inicia sin errores, visita <http://127.0.0.1:8000/> y prueba una cuenta de demostración.
-
-## Problemas frecuentes
-
-- **`Access denied for user` o error de conexión:** verifica usuario, contraseña, host y puerto en `.env`; confirma que MySQL esté iniciado.
-- **`Unknown database` o permisos insuficientes:** el usuario debe tener permiso `CREATE` para que el script pueda crear la base.
-- **El puerto 8000 está ocupado:** ejecuta manualmente `python manage.py runserver 127.0.0.1:8001` y abre el puerto indicado.
-- **Python no se reconoce como comando:** reinstala Python marcando la opción **Add Python to PATH** o usa `py` en lugar de `python`.
-- **Faltan módulos de Python:** activa `.venv` e instala con `python -m pip install -r requirements-local.txt`.
-- **Linux requiere soporte de entornos virtuales:** en Debian/Ubuntu ejecuta `sudo apt install python3-venv`.
-
-## Seguridad
-
-- Nunca publiques `.env`, contraseñas o claves secretas.
-- Cambia todas las cuentas demo antes de usar el sistema en producción.
-- Ejecuta el servidor de Django solo en una red local de confianza durante pruebas.
-- Para acceso público configura HTTPS, secretos propios y dominios explícitos.

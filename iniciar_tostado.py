@@ -60,10 +60,22 @@ def preparar_configuracion() -> None:
     configuracion = RAIZ / ".env"
     if not configuracion.exists():
         shutil.copyfile(ejemplo, configuracion)
-        print("Se creó .env con la configuración local predeterminada de MySQL.")
+        print("Se creó .env con SQLite, listo para usar sin configurar una base externa.")
+
+
+def motor_configurado() -> str:
+    configuracion = RAIZ / ".env"
+    if configuracion.exists():
+        for linea in configuracion.read_text(encoding="utf-8").splitlines():
+            linea = linea.strip()
+            if linea.startswith("DATABASE_ENGINE="):
+                return linea.split("=", 1)[1].strip().lower()
+    return "sqlite"
 
 
 def preparar(python: Path) -> None:
+    motor = motor_configurado()
+    archivo_dependencias = "requirements-local.txt" if motor == "mysql" else "requirements.txt"
     ejecutar(
         str(python),
         "-m",
@@ -71,9 +83,10 @@ def preparar(python: Path) -> None:
         "install",
         "--disable-pip-version-check",
         "-r",
-        "requirements-local.txt",
+        archivo_dependencias,
     )
-    ejecutar(str(python), "crear_base_mysql.py")
+    if motor not in {"sqlite", "sqlite3", "local"}:
+        ejecutar(str(python), "crear_base_mysql.py")
     ejecutar(str(python), "manage.py", "migrate", "--noinput")
     ejecutar(str(python), "manage.py", "cargar_demo")
 
