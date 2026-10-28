@@ -100,7 +100,21 @@ if database_url:
             conn_max_age=int(os.getenv("DATABASE_CONN_MAX_AGE", "600")),
         )
     }
-else:
+elif os.getenv("DATABASE_ENGINE", "sqlite").strip().lower() in {
+    "sqlite",
+    "sqlite3",
+    "local",
+}:
+    nombre_sqlite = Path(os.getenv("SQLITE_DATABASE", "db.sqlite3"))
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": nombre_sqlite
+            if nombre_sqlite.is_absolute()
+            else BASE_DIR / nombre_sqlite,
+        }
+    }
+elif os.getenv("DATABASE_ENGINE", "sqlite").strip().lower() == "mysql":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
@@ -116,6 +130,10 @@ else:
             },
         }
     }
+else:
+    raise ImproperlyConfigured(
+        "DATABASE_ENGINE debe ser sqlite o mysql, o configura DATABASE_URL."
+    )
 
 AUTH_PASSWORD_VALIDATORS = [
     {
